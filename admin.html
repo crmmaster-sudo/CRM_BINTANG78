@@ -763,6 +763,144 @@
     font-weight: 600;
     margin-left: 8px;
   }
+
+  /* Styles untuk fitur request database */
+  .database-request-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 16px;
+    transition: all 0.2s ease;
+  }
+
+  .database-request-card.pending {
+    border-left: 4px solid #f59e0b;
+  }
+
+  .database-request-card.approved {
+    border-left: 4px solid #10b981;
+  }
+
+  .database-request-card.rejected {
+    border-left: 4px solid #ef4444;
+  }
+
+  .request-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+
+  .admin-name {
+    font-weight: 600;
+    color: #1f2937;
+  }
+
+  .request-date {
+    color: #6b7280;
+    font-size: 12px;
+  }
+
+  .request-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+
+  .request-amount {
+    font-weight: bold;
+    color: #3b82f6;
+    font-size: 16px;
+  }
+
+  .request-actions {
+    display: flex;
+    gap: 8px;
+  }
+
+  .status-badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  .status-badge.pending {
+    background: #fef3c7;
+    color: #92400e;
+  }
+
+  .status-badge.approved {
+    background: #dcfce7;
+    color: #166534;
+  }
+
+  .status-badge.rejected {
+    background: #fee2e2;
+    color: #dc2626;
+  }
+
+  .request-footer {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid #f3f4f6;
+    font-size: 11px;
+    color: #9ca3af;
+  }
+
+  .database-request-form {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 20px;
+  }
+
+  .form-row {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 12px;
+  }
+
+  .form-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .form-label {
+    font-weight: 500;
+    margin-bottom: 6px;
+    color: #374151;
+    font-size: 14px;
+  }
+
+  .form-input {
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 14px;
+  }
+
+  .form-input:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  }
+
+  .request-history {
+    margin-top: 20px;
+  }
+
+  .history-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: #374151;
+  }
 </style>
 </head>
 <body>
@@ -829,6 +967,11 @@
       </div>
       
       <div class="menu-divider"></div>
+      
+      <div class="menu-item" onclick="showSection('database-request')">
+        <span class="menu-icon">📦</span>
+        <span class="menu-text">Request Database</span>
+      </div>
       
       <div class="menu-item" onclick="showSection('auto-save')">
         <span class="menu-icon">📁</span>
@@ -1075,6 +1218,59 @@
         </div>
       </div>
 
+      <!-- Request Database Section -->
+      <div id="database-request-section" class="section" style="display:none">
+        <div class="card">
+          <h3 style="margin-bottom:16px">📦 Request Database dari Master</h3>
+          
+          <!-- Form untuk request database -->
+          <div class="database-request-form">
+            <h4 style="margin:0 0 16px 0;color:#3b82f6">Form Request Database</h4>
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Jumlah Database yang Diinginkan</label>
+                <input type="number" id="requestedAmount" class="form-input" placeholder="Contoh: 100" min="1" max="1000">
+              </div>
+              
+              <div class="form-group">
+                <label class="form-label">Prioritas</label>
+                <select id="requestPriority" class="form-input">
+                  <option value="low">Rendah</option>
+                  <option value="medium" selected>Sedang</option>
+                  <option value="high">Tinggi</option>
+                  <option value="urgent">Sangat Mendesak</option>
+                </select>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">Catatan untuk Master (Opsional)</label>
+              <textarea id="requestNotes" class="form-input" placeholder="Contoh: Butuh database untuk campaign baru..." rows="3"></textarea>
+            </div>
+            
+            <button onclick="submitDatabaseRequest()" style="width:100%;padding:12px" class="success">📤 Kirim Request ke Master</button>
+            <small style="color:#666; display:block; margin-top:8px; text-align:center;">
+              Request akan dikirim ke CRM Master untuk diproses
+            </small>
+          </div>
+
+          <!-- Status Request Database -->
+          <div class="request-history">
+            <h4 class="history-title">Status Request Database</h4>
+            
+            <div id="databaseRequestsContainer">
+              <!-- Daftar request database akan dimuat di sini -->
+              <div class="empty-state">
+                <div class="empty-state-icon">📦</div>
+                <div class="empty-state-title">Belum Ada Request Database</div>
+                <div class="empty-state-desc">Kirim request database pertama Anda untuk melihat statusnya di sini</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- Auto Save ke Drive Section -->
       <div id="auto-save-section" class="section" style="display:none">
         <!-- Google Drive Auto Save -->
@@ -1303,6 +1499,191 @@ async function openMain(user) {
   
   // Start polling untuk deposit requests
   startDepositRequestsPolling();
+  
+  // Load database requests
+  refreshDatabaseRequests();
+}
+
+// ==================== FITUR REQUEST DATABASE ====================
+
+// Fungsi untuk mengirim request database ke master
+async function submitDatabaseRequest() {
+  if (!currentAdmin) {
+    alert('Silakan login terlebih dahulu');
+    return;
+  }
+
+  const requestedAmount = document.getElementById('requestedAmount').value;
+  const priority = document.getElementById('requestPriority').value;
+  const notes = document.getElementById('requestNotes').value.trim();
+
+  // Validasi input
+  if (!requestedAmount || requestedAmount < 1) {
+    alert('Jumlah database yang diminta harus diisi (minimal 1)');
+    return;
+  }
+
+  if (requestedAmount > 1000) {
+    alert('Maksimal request database adalah 1000');
+    return;
+  }
+
+  try {
+    // Tampilkan loading
+    showNotification('📤 Mengirim request database ke Master...');
+
+    // Simpan request ke database
+    const requestData = {
+      id: 'db_req_' + uid(),
+      admin_username: currentAdmin.username,
+      admin_name: currentAdmin.name,
+      requested_amount: parseInt(requestedAmount),
+      priority: priority,
+      notes: notes || null,
+      status: 'pending',
+      created_at: new Date().toISOString()
+    };
+
+    const { error } = await supabase
+      .from('database_requests')
+      .insert([requestData]);
+
+    if (error) throw error;
+
+    // Reset form
+    document.getElementById('requestedAmount').value = '';
+    document.getElementById('requestPriority').value = 'medium';
+    document.getElementById('requestNotes').value = '';
+
+    showNotification('✅ Request database berhasil dikirim ke Master!');
+    
+    // Refresh daftar request
+    refreshDatabaseRequests();
+
+  } catch (error) {
+    console.error('Error submitting database request:', error);
+    alert('❌ Gagal mengirim request database: ' + error.message);
+  }
+}
+
+// Fungsi untuk memuat daftar request database
+async function refreshDatabaseRequests() {
+  if (!currentAdmin) return;
+
+  try {
+    const { data: requests, error } = await supabase
+      .from('database_requests')
+      .select('*')
+      .eq('admin_username', currentAdmin.username)
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+
+    updateDatabaseRequestsDisplay(requests || []);
+  } catch (error) {
+    console.error('Error loading database requests:', error);
+  }
+}
+
+// Fungsi untuk menampilkan daftar request database
+function updateDatabaseRequestsDisplay(requests) {
+  const container = document.getElementById('databaseRequestsContainer');
+  if (!container) return;
+
+  if (requests.length === 0) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-state-icon">📦</div>
+        <div class="empty-state-title">Belum Ada Request Database</div>
+        <div class="empty-state-desc">Kirim request database pertama Anda untuk melihat statusnya di sini</div>
+      </div>
+    `;
+    return;
+  }
+
+  const pendingRequests = requests.filter(req => req.status === 'pending');
+  const approvedRequests = requests.filter(req => req.status === 'approved');
+  const rejectedRequests = requests.filter(req => req.status === 'rejected');
+
+  container.innerHTML = `
+    <div class="request-stats">
+      <div class="stat-card pending">
+        <div class="stat-value">${pendingRequests.length}</div>
+        <div class="stat-label">Menunggu</div>
+      </div>
+      <div class="stat-card approved">
+        <div class="stat-value">${approvedRequests.length}</div>
+        <div class="stat-label">Disetujui</div>
+      </div>
+      <div class="stat-card rejected">
+        <div class="stat-value">${rejectedRequests.length}</div>
+        <div class="stat-label">Ditolak</div>
+      </div>
+    </div>
+
+    <div class="requests-section">
+      <h4>Request Menunggu Konfirmasi</h4>
+      ${pendingRequests.length === 0 ? 
+        '<div class="empty-state" style="padding:20px; margin:0;">Tidak ada request menunggu konfirmasi</div>' : 
+        pendingRequests.map(request => `
+          <div class="database-request-card pending" id="db-request-${request.id}">
+            <div class="request-header">
+              <span class="admin-name">${request.admin_name}</span>
+              <span class="request-date">${formatDateForDisplay(request.created_at)}</span>
+            </div>
+            <div class="request-details">
+              <div class="request-amount">${request.requested_amount} Database</div>
+              <span class="status-badge pending">Menunggu</span>
+            </div>
+            ${request.notes ? `<div class="notes">Catatan: ${request.notes}</div>` : ''}
+            <div class="request-footer">
+              Prioritas: ${getPriorityText(request.priority)} • 
+              Diajukan: ${new Date(request.created_at).toLocaleString('id-ID')}
+            </div>
+          </div>
+        `).join('')
+      }
+    </div>
+
+    <div class="requests-section">
+      <h4>Riwayat Request</h4>
+      ${approvedRequests.concat(rejectedRequests).length === 0 ? 
+        '<div class="empty-state" style="padding:20px; margin:0;">Belum ada riwayat request</div>' : 
+        approvedRequests.concat(rejectedRequests).map(request => `
+          <div class="database-request-card ${request.status}" id="db-request-${request.id}">
+            <div class="request-header">
+              <span class="admin-name">${request.admin_name}</span>
+              <span class="request-date">${formatDateForDisplay(request.created_at)}</span>
+              <span class="status-badge ${request.status}">
+                ${request.status === 'approved' ? '✅ Disetujui' : '❌ Ditolak'}
+              </span>
+            </div>
+            <div class="request-details">
+              <div class="request-amount">${request.requested_amount} Database</div>
+              ${request.approved_amount ? `<div class="notes">Disetujui: ${request.approved_amount} Database</div>` : ''}
+            </div>
+            ${request.notes ? `<div class="notes">Catatan: ${request.notes}</div>` : ''}
+            ${request.rejection_reason ? `<div class="notes" style="background:#fef2f2;">Alasan ditolak: ${request.rejection_reason}</div>` : ''}
+            <div class="request-footer">
+              Prioritas: ${getPriorityText(request.priority)} • 
+              ${request.status === 'approved' ? 'Disetujui' : 'Ditolak'} pada: ${request.processed_at ? new Date(request.processed_at).toLocaleString('id-ID') : '-'}
+            </div>
+          </div>
+        `).join('')
+      }
+    </div>
+  `;
+}
+
+// Fungsi untuk mendapatkan teks prioritas
+function getPriorityText(priority) {
+  const priorityMap = {
+    'low': 'Rendah',
+    'medium': 'Sedang',
+    'high': 'Tinggi',
+    'urgent': 'Sangat Mendesak'
+  };
+  return priorityMap[priority] || priority;
 }
 
 // ==================== FUNGSI ANIMASI RIPPLE SEDERHANA ====================
@@ -1686,6 +2067,8 @@ async function cancelDepositRequest(requestId) {
   }
 }
 
+// ==================== FUNGSI AUTO UPDATE DEPOSIT YANG SUDAH DISETUJUI ====================
+
 // Fungsi untuk memeriksa status deposit requests secara real-time
 function startDepositRequestsPolling() {
   setInterval(() => {
@@ -1696,7 +2079,7 @@ function startDepositRequestsPolling() {
   }, 30000); // Check every 30 seconds
 }
 
-// Fungsi untuk mengecek approval baru dan auto tambah ke deposit
+// FUNGSI UTAMA YANG DIPERBAIKI: Mengecek approval baru dan auto tambah ke deposit
 async function checkNewApprovals() {
   try {
     const { data: newApprovals, error } = await supabase
@@ -1709,43 +2092,56 @@ async function checkNewApprovals() {
     if (error) throw error;
 
     if (newApprovals && newApprovals.length > 0) {
+      console.log(`Found ${newApprovals.length} new approved deposits to process`);
+      
       for (const approval of newApprovals) {
-        // Auto tambah ke deposits
-        await addApprovedDeposit(approval);
+        // Auto tambah ke deposits dengan tanggal yang sesuai
+        const success = await addApprovedDeposit(approval);
         
-        // Mark as added
-        const { error: updateError } = await supabase
-          .from('deposit_requests')
-          .update({ added_to_deposits: true })
-          .eq('id', approval.id);
+        if (success) {
+          // Mark as added
+          const { error: updateError } = await supabase
+            .from('deposit_requests')
+            .update({ added_to_deposits: true })
+            .eq('id', approval.id);
 
-        if (updateError) throw updateError;
+          if (updateError) {
+            console.error('Error updating deposit request:', updateError);
+          }
+        }
       }
       
-      showNotification(`✅ ${newApprovals.length} deposit disetujui otomatis ditambahkan!`);
+      showNotification(`✅ ${newApprovals.length} deposit disetujui otomatis ditambahkan ke riwayat!`);
+      
+      // Refresh semua data yang terkait
       refreshDeposits();
       refreshChart();
       refreshDailySummary();
       updateDepositStats();
+      refreshDepositRequests();
     }
   } catch (error) {
     console.error('Error checking new approvals:', error);
   }
 }
 
-// Fungsi untuk menambahkan deposit yang sudah disetujui
+// FUNGSI UTAMA YANG DIPERBAIKI: Menambahkan deposit yang sudah disetujui ke riwayat
 async function addApprovedDeposit(approval) {
   try {
+    // Gunakan tanggal dari deposit_date yang diinput saat pengajuan
+    const depositDate = approval.deposit_date;
+    
     const depositData = {
       id: 'd' + uid(),
       member_id: approval.member_id,
       member_name: approval.member_name,
       amount: approval.amount,
-      date: approval.deposit_date,
+      date: depositDate, // Gunakan tanggal dari input pengguna
       admin_username: currentAdmin.username,
       created_at: new Date().toISOString(),
       approved_by: approval.approved_by,
-      approved_at: approval.approved_at
+      approved_at: approval.approved_at,
+      source: 'approved_request' // Tambahkan flag untuk melacak sumber
     };
 
     const { error } = await supabase
@@ -1754,16 +2150,20 @@ async function addApprovedDeposit(approval) {
 
     if (error) throw error;
 
+    // Update state lokal
     state.deposits.push(depositData);
     
-    if (!dateWiseData[approval.deposit_date]) {
-      dateWiseData[approval.deposit_date] = {
+    // Update dateWiseData dengan tanggal yang benar
+    if (!dateWiseData[depositDate]) {
+      dateWiseData[depositDate] = {
         members: [],
         deposits: []
       };
     }
-    dateWiseData[approval.deposit_date].deposits.push(depositData);
+    dateWiseData[depositDate].deposits.push(depositData);
 
+    console.log(`✅ Added approved deposit: ${approval.member_name} - ${formatCurrency(approval.amount)} - ${depositDate}`);
+    
     return true;
   } catch (error) {
     console.error('Error adding approved deposit:', error);
@@ -3328,5 +3728,4 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 </body>
-
 </html>
